@@ -409,11 +409,22 @@ function getValidWaypoints(waypoints, reArrangeIndexes = false) {
     }
 
     let lastWaypointIndex = -1;
+    let foundFirstValidWaypoint = false;
 
     const validWaypoints = _.reduce(
         waypointValues,
         (acc, currentWaypoint, index) => {
             const previousWaypoint = waypointValues[lastWaypointIndex];
+            console.log(lastWaypointIndex, !waypointHasValidAddress(currentWaypoint), currentWaypoint, previousWaypoint);
+
+            // Skip all starting invalid waypoints
+            if (foundFirstValidWaypoint == false && !waypointHasValidAddress(currentWaypoint)) {
+                lastWaypointIndex += 1;
+                return acc;
+            } else {
+                foundFirstValidWaypoint = true;
+            }
+
             // Check if the waypoint has a valid address
             if (!waypointHasValidAddress(currentWaypoint)) {
                 return acc;
